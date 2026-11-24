@@ -1,10 +1,12 @@
 """Командный процессор эмулятора."""
 
 import shlex
+from vfs import load
 
 
 class Shell:
-    def __init__(self):
+    def __init__(self, path=None):
+        self.name, self.root = load(path)
         self.cwd = "/"
         self.closed = False
 

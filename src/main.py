@@ -66,8 +66,12 @@ def main():
     parser.add_argument("--vfs", type=Path)
     parser.add_argument("--script", type=Path)
     args = parser.parse_args()
+    try:
+        shell = Shell(args.vfs)
+    except ValueError as error:
+        parser.exit(1, f"{error}\n")
     root = tk.Tk()
-    terminal = Terminal(root, Shell())
+    terminal = Terminal(root, shell)
     terminal.write(f"vfs={args.vfs}, script={args.script}")
     if args.script:
         root.after(100, start_script, terminal, args.script)
