@@ -3,6 +3,7 @@
 import posixpath
 import shlex
 
+from changes import duplicate, rmdir
 from vfs import load
 
 
@@ -67,6 +68,14 @@ class Shell:
         if not words:
             return ""
         name, *args = words
+        if name == "cp":
+            duplicate(self, args)
+            return ""
+        if name == "rmdir":
+            if len(args) != 1:
+                raise ValueError("Использование: rmdir каталог")
+            rmdir(self, args[0])
+            return ""
         if name == "exit" and not args:
             self.closed = True
             return ""
