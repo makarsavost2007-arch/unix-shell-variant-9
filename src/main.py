@@ -1,5 +1,7 @@
 """Графический терминал учебной виртуальной оболочки."""
 
+import argparse
+from pathlib import Path
 import getpass
 import socket
 import tkinter as tk
@@ -43,9 +45,32 @@ class Terminal:
         self.run(line)
 
 
+def start_script(terminal, path):
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, ValueError) as error:
+        terminal.write(f"Ошибка чтения сценария: {error}")
+        return
+
+    def step(index):
+        if index < len(lines):
+            terminal.run(lines[index], f"{path}:{index + 1}")
+            if not terminal.shell.closed:
+                terminal.root.after(100, step, index + 1)
+
+    step(0)
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--vfs", type=Path)
+    parser.add_argument("--script", type=Path)
+    args = parser.parse_args()
     root = tk.Tk()
-    Terminal(root, Shell())
+    terminal = Terminal(root, Shell())
+    terminal.write(f"vfs={args.vfs}, script={args.script}")
+    if args.script:
+        root.after(100, start_script, terminal, args.script)
     root.mainloop()
 
 
