@@ -1,0 +1,12 @@
+ls
+ls "мои файлы"
+cd "мои файлы/неделя/лаб"
+ls стих.txt
+cat стих.txt
+tac стих.txt
+rev стих.txt
+cat стих.txt стих.txt
+cat missing
+cd ..
+cd
+ls
